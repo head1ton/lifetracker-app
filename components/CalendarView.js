@@ -100,7 +100,7 @@ export default class CalendarView extends React.Component {
       </Modal>
     );
 
-    return (
+    let calendarView = (
       <Animatable.View
         animation="fadeIn"
         style={{
@@ -130,5 +130,11 @@ export default class CalendarView extends React.Component {
         {modal}
       </Animatable.View>
     );
+
+    if (!this.props.hidden) {
+      return calendarView;
+    } else {
+      return null;
+    }
   }
 }

@@ -1,14 +1,11 @@
 import React from "react";
-import Database from "../Database";
 
 import { Screen } from "../css/designSystem";
 import Header from "../components/Header";
+import SubHeader from "../components/SubHeader";
 import ActionButton from "../components/ActionButton";
 import CalendarView from "../components/CalendarView";
-import * as FileSystem from 'expo-file-system';
-import * as DocumentPicker from 'expo-document-picker';
-
-import { AsyncStorage } from "react-native";
+import StatisticsView from "../components/StatisticsView";
 
 export default class CommonScreen extends React.Component {
   static navigationOptions = {
@@ -18,9 +15,24 @@ export default class CommonScreen extends React.Component {
   constructor(props) {
     super(props);
     this.database = global.db;
+    this.switchView = this.switchView.bind(this);
     this.state = {
-      drawerOpen: true
+      drawerOpen: true,
+      calendarView: true,
+      statisticsView: false
     };
+  }
+
+  switchView(view) {
+    if (view == "calendar" && this.state.calendarView == false) {
+      this.setState({ statisticsView: false })
+      this.setState({ calendarView: true })
+    }
+
+    if (view == "statistics" && this.state.statisticsView == false) {
+      this.setState({ statisticsView: true })
+      this.setState({ calendarView: false })
+    }
   }
 
   async componentDidMount() {
@@ -31,8 +43,11 @@ export default class CommonScreen extends React.Component {
     return (
       <Screen>
         <Header title={"Overview"} />
+        <SubHeader switchCallback={this.switchView} />
 
-        <CalendarView navigation={this.props.navigation} />
+        <CalendarView navigation={this.props.navigation} hidden={!this.state.calendarView} />
+        <StatisticsView hidden={!this.state.statisticsView} />
+
         <ActionButton buttonText={"New Record"} navigateTo={"Mood"} />
       </Screen>
     );
